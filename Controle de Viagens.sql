@@ -26,6 +26,7 @@ CREATE TABLE `responsavel_Pagamento`(
 `centroDeCusto`  varchar(08),
 `ContaContabil`  varchar(10),
 `GestorResponsavel` varchar(150),
+`ConfereGestor`varchar(03),
 `Nºsolicitacao` varchar(06),
 CONSTRAINT fk_SolResPagamento FOREIGN KEY (Nºsolicitacao) REFERENCES viajantes (Nºsolicitacao)
 );
@@ -93,5 +94,18 @@ FROM tarifa
 INNER JOIN viajantes
 ON tarifa.Nºsolicitacao = viajantes.Nºsolicitacao
 WHERE volta = 'RIO DE JANEIRO'
-ORDER BY valorBilhete desc
+ORDER BY valorBilhete desc;
 
+/*GASTO POR CONTA CONTABIL*/
+
+SELECT ContaContabil, SUM(valorBilhete), SUM(valorTaxaAdm)
+FROM responsavel_Pagamento
+INNER JOIN tarifa
+ON responsavel_Pagamento.Nºsolicitacao = tarifa.Nºsolicitacao
+WHERE valorBilhete>20000
+GROUP BY ContaContabil;
+
+SELECT viajantes.passageiros, viajantes.ida, viajantes.volta, tarifa.valorBilhete, tarifa.valorTaxaAdm, responsavel_Pagamento.GestorResponsavel
+FROM viajantes, tarifa, responsavel_Pagamento
+WHERE viajantes.Nºsolicitacao = tarifa.Nºsolicitacao AND viajantes.Nºsolicitacao = responsavel_Pagamento.Nºsolicitacao
+order by valorBilhete desc;
