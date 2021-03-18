@@ -109,3 +109,26 @@ SELECT viajantes.passageiros, viajantes.ida, viajantes.volta, tarifa.valorBilhet
 FROM viajantes, tarifa, responsavel_Pagamento
 WHERE viajantes.Nºsolicitacao = tarifa.Nºsolicitacao AND viajantes.Nºsolicitacao = responsavel_Pagamento.Nºsolicitacao
 order by valorBilhete desc;
+
+
+
+
+/*CRIAÇÃO DE TRIGGER PARA VALIDAR A CONFERENCIA DE VALOR GASTO*/
+
+CREATE TABLE conferencia (
+idConferencia INT NOT NULL primary KEY auto_increment,
+Gestor VARCHAR(45) NULL,
+`Nºsolicitacao` varchar(06),
+CONSTRAINT fk_Conferencia FOREIGN KEY (Nºsolicitacao) REFERENCES viajantes (Nºsolicitacao)
+);
+
+
+
+/*DESPESAS JÁ CONFERIDAS PELO GESTOR*/
+
+SELECT viajantes.Nºsolicitacao,viajantes.passageiros, viajantes.ida, viajantes.volta, tarifa.valorBilhete, tarifa.valorTaxaAdm, responsavel_Pagamento.GestorResponsavel,responsavel_Pagamento.ConfereGestor
+FROM viajantes, tarifa, responsavel_Pagamento
+WHERE viajantes.Nºsolicitacao = tarifa.Nºsolicitacao AND viajantes.Nºsolicitacao = responsavel_Pagamento.Nºsolicitacao AND responsavel_Pagamento.ConfereGestor = "SIM"
+order by valorBilhete desc;
+
+
